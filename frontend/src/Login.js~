@@ -1,0 +1,39 @@
+import React, { useState } from "react";
+import axios from "axios";
+
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    try {
+      const response = await axios.post(
+        "/auth/login",
+        new URLSearchParams({ username: email, password }),
+        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+      );
+      console.log("✅ Login response:", response.data);
+      setMessage(`✅ Logged in as ${response.data.role || "user"}`);
+    } catch (err) {
+      console.error("❌ Login error:", err.response?.data || err.message);
+      setMessage("❌ Invalid email or password");
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: "400px", margin: "100px auto", padding: "20px", border: "1px solid #ccc", borderRadius: "10px", textAlign: "center" }}>
+      <h2>Login</h2>
+      <form onSubmit={handleLogin}>
+        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "8px" }} />
+        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "8px" }} />
+        <button type="submit" style={{ width: "100%", padding: "10px", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "5px" }}>Login</button>
+      </form>
+      <p style={{ marginTop: "10px" }}>{message}</p>
+    </div>
+  );
+};
+
+export default Login;
