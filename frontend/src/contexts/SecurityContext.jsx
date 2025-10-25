@@ -422,7 +422,7 @@ export function SecurityProvider({ children }) {
   const hasRole = (requiredRole) => {
     if (!state.user) return false;
     
-    const roleHierarchy = {
+    const Hierarchy = {
       'super_admin': 100,
       'tenant_admin': 80,
       'dispatcher': 60,
@@ -431,15 +431,15 @@ export function SecurityProvider({ children }) {
       'viewer': 20
     };
 
-    const userLevel = roleHierarchy[state.user.role] || 0;
-    const requiredLevel = roleHierarchy[requiredRole] || 0;
+    const userLevel = Hierarchy[state.] || 0;
+    const requiredLevel = Hierarchy[requiredRole] || 0;
 
     return userLevel >= requiredLevel;
   };
 
   const canAccessTenant = (tenantId) => {
     if (!state.user) return false;
-    if (state.user.role === 'super_admin') return true;
+    if (state. === 'super_admin') return true;
     return state.user.tenant_id === tenantId;
   };
 

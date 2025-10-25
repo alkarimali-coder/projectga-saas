@@ -9,7 +9,7 @@ const Pagination = ({
   ...props
 }) => (
   <nav
-    role="navigation"
+    ="navigation"
     aria-label="pagination"
     className={cn("mx-auto flex w-full justify-center", className)}
     {...props} />

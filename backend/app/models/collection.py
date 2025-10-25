@@ -1,11 +1,11 @@
 from sqlalchemy import Column, Integer, Float, DateTime, ForeignKey
-from core.db import Base
+from app.core.db import Base
 from datetime import datetime
 
-class RevenueLog(Base):
-    __tablename__ = "revenue_logs"
+class Collection(Base):
+    __tablename__ = "collections"
     id = Column(Integer, primary_key=True)
-    collection_id = Column(Integer, ForeignKey("collections.id"))
+    machine_id = Column(Integer, ForeignKey("machines.id"))
     amount = Column(Float)
-    logged_at = Column(DateTime, default=datetime.utcnow)
+    collected_at = Column(DateTime, default=datetime.utcnow)
     tenant_id = Column(Integer, ForeignKey("tenants.id"))

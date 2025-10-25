@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from core.db import Base
+from app.core.db import Base
 
 class Tenant(Base):
     __tablename__ = "tenants"

@@ -1,11 +1,10 @@
-from fastapi import APIRouter, Depends
-from core.security import get_current_active_user
+from fastapi import APIRouter
 
 router = APIRouter()
 
 @router.get("/inventory")
 @router.get("/inventory/")
-async def get_inventory(user=Depends(get_current_active_user)):
+def get_inventory():
     return {
         "machines": [
             {"id": 1, "name": "M001", "location": "Store A", "revenue": 239.25, "status": "active"}

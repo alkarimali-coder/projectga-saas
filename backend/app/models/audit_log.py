@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-from core.db import Base
+from app.core.db import Base
 from datetime import datetime
 
 class AuditLog(Base):

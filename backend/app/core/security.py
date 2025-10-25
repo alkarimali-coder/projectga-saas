@@ -5,8 +5,8 @@ from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from models.user import User
-from core.db import get_db
+from app.models.user import User
+from app.core.db import get_db
 
 # JWT
 SECRET_KEY = "your-super-secret-jwt-key-change-in-prod"

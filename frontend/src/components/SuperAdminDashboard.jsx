@@ -64,9 +64,9 @@ const SuperAdminDashboard = () => {
     }
   });
 
-  // Simple role checker
-  const hasRole = (role) => {
-    return user && user.role === role;
+  // Simple  checker
+  const hasRole = () => {
+    return user &&  === ;
   };
 
   // State management

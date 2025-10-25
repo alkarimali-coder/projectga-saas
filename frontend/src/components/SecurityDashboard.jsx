@@ -63,7 +63,7 @@ const SecurityDashboard = () => {
   const [selectedTab, setSelectedTab] = useState('overview');
   
   // Check if user has super admin access
-  const canAccessSecurity = user && user.role === 'super_admin';
+  const canAccessSecurity = user &&  === 'super_admin';
 
   useEffect(() => {
     if (canAccessSecurity) {
@@ -181,7 +181,7 @@ const SecurityDashboard = () => {
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            You don't have permission to access the Security Dashboard. Super Admin role required.
+            You don't have permission to access the Security Dashboard. Super Admin  required.
           </AlertDescription>
         </Alert>
       </div>
@@ -393,7 +393,7 @@ const SecurityDashboard = () => {
                         <div>
                           <div className="font-medium">{user.email}</div>
                           <div className="text-sm text-gray-600">
-                            {user.role} • {user.tenant_id || 'No tenant'}
+                            {} • {user.tenant_id || 'No tenant'}
                           </div>
                           <div className="flex items-center gap-2 mt-1">
                             {user.mfa_enabled ? (
