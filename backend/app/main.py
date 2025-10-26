@@ -8,7 +8,7 @@ app = FastAPI()
 # ---- CORS FIX ----
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # frontend URL
+    allow_origins=["*"],  # Change to your Netlify URL in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
