@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: projectga-api
+    env: python
+    region: oregon
+    plan: free
+    branch: phase1-core-merge
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      DATABASE_URL:
+        fromDatabase:
+          name: projectga-db
+          property: connectionString
+      JWT_SECRET: supersecret
+    pythonVersion: "3.12"
