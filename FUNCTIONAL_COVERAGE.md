@@ -4,7 +4,7 @@ Module | Verified | Notes
 --- | --- | ---
 Auth & RBAC | ✅ | Login and role checks working
 Machines CRUD | ✅ | Add/edit machines with tenant isolation
-Dispatch Workflow | ⚙️ | Scheduling jobs – under review
+Dispatch Workflow | ✅ | Scheduling jobs – reviewed and working
 Field Tech PWA | ✅ | Mobile view tested in Chrome
 Revenue Sync | ✅ | CSV upload and matching OK
 Billing (Stripe Test) | ✅ | Webhook test passed
