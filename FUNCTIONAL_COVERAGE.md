@@ -9,5 +9,6 @@ Field Tech PWA | ✅ | Mobile view tested in Chrome
 Revenue Sync | ✅ | CSV upload and matching OK
 Billing (Stripe Test) | ✅ | Webhook test passed
 Audit & Reports | ✅ | CSV/PDF export valid
+**Render Deployment** | ⚙️ | Testing planned for later
 
 Update this as you test! Use ✅ for done, ⚙️ for in progress, ❌ for not started.
