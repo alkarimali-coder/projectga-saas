@@ -1,14 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers.auth import router as auth_router
-from app.routers.inventory import router as inventory_router
+from backend.routers.auth import router as auth_router
+from backend.routers.inventory import router as inventory_router
 
 app = FastAPI()
 
-# ---- CORS FIX ----
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change to your Netlify URL in production
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

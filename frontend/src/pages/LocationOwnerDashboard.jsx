@@ -1,38 +1,40 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import ModalForm from '../components/ModalForm';
 
 function LocationOwnerDashboard() {
-  const [locations, setLocations] = useState([]);
+  const [revenues, setRevenues] = useState([
+    { id: 1, location: "Store A", amount: 1239.25, verified: false }
+  ]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [amount, setAmount] = useState('');
 
-  useEffect(() => {
-    // Mock data until API is ready
-    setLocations([
-      { id: 1, name: "Store A", revenue: 1239.25, machines: 3 },
-      { id: 2, name: "Store B", revenue: 980.00, machines: 2 },
-    ]);
-  }, []);
-
-  const totalRevenue = locations.reduce((sum, l) => sum + l.revenue, 0);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setRevenues([...revenues, { id: revenues.length + 1, location: "Store A", amount: parseFloat(amount), verified: false }]);
+    setModalOpen(false);
+  };
 
   return (
     <div style={{ padding: '2rem' }}>
       <h1>Location Owner Dashboard</h1>
-      <div style={{ background: '#e0e7ff', padding: '1rem', borderRadius: '8px', marginBottom: '1rem' }}>
-        <h2>Total Revenue: ${totalRevenue.toFixed(2)}</h2>
-      </div>
+      <button onClick={() => setModalOpen(true)}>Log Revenue</button>
+      <ModalForm isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Log Revenue">
+        <input type="number" placeholder="Amount" value={amount} onChange={e => setAmount(e.target.value)} />
+      </ModalForm>
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr style={{ background: '#f3f4f6' }}>
             <th style={{ padding: '0.5rem', border: '1px solid #ddd' }}>Location</th>
-            <th style={{ padding: '0.5rem', border: '1px solid #ddd' }}>Revenue</th>
-            <th style={{ padding: '0.5rem', border: '1px solid #ddd' }}>Machines</th>
+            <th style={{ padding: '0.5rem', border: '1px solid #ddd' }}>Amount</th>
+            <th style={{ padding: '0.5rem', border: '1px solid #ddd' }}>Verified</th>
           </tr>
         </thead>
         <tbody>
-          {locations.map(l => (
-            <tr key={l.id}>
-              <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{l.name}</td>
-              <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>${l.revenue.toFixed(2)}</td>
-              <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{l.machines}</td>
+          {revenues.map(r => (
+            <tr key={r.id}>
+              <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{r.location}</td>
+              <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>${r.amount.toFixed(2)}</td>
+              <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{r.verified ? 'Yes' : 'No'}</td>
             </tr>
           ))}
         </tbody>

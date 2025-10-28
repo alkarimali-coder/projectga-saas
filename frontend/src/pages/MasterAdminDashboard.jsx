@@ -1,24 +1,26 @@
-import { useEffect, useState } 
-from 'react';
-import { getInventory } from '../services/api';
+import { useState } from 'react';
+import ModalForm from '../components/ModalForm';
 
 function MasterAdminDashboard() {
-  const [machines, setMachines] = useState([]);
+  const [machines, setMachines] = useState([
+    { id: 1, name: "M001", location: "Store A", revenue: 239.25, status: "Active" }
+  ]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [email, setEmail] = useState('');
 
-  useEffect(() => {
-    getInventory()
-      .then(res => setMachines(res.data.machines))
-      .catch(() => setMachines([]));
-  }, []);
-
-  const totalRevenue = machines.reduce((sum, m) => sum + m.revenue, 0);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Invite sent to:', email);
+    setModalOpen(false);
+  };
 
   return (
     <div style={{ padding: '2rem' }}>
       <h1>Master Admin Dashboard</h1>
-      <div style={{ background: '#fef3c7', padding: '1rem', borderRadius: '8px', marginBottom: '1rem' }}>
-        <h2>Total Revenue: ${totalRevenue.toFixed(2)}</h2>
-      </div>
+      <button onClick={() => setModalOpen(true)}>Invite User</button>
+      <ModalForm isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Invite User">
+        <input placeholder="User Email" value={email} onChange={e => setEmail(e.target.value)} />
+      </ModalForm>
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr style={{ background: '#f3f4f6' }}>
