@@ -1,25 +1,8 @@
-import { useEffect, useState } from 'react';
-import { getInventory } from '../services/api';
-
-function Dashboard() {
-  const [machines, setMachines] = useState([]);
-
-  useEffect(() => {
-    getInventory()
-      .then(res => setMachines(res.data.machines))
-      .catch(() => setMachines([]));
-  }, []);
-
+function Dashboard({ inventory }) {
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Inventory</h1>
-      <ul>
-        {machines.map(m => (
-          <li key={m.id}>
-            {m.name} – ${m.revenue} ({m.status})
-          </li>
-        ))}
-      </ul>
+    <div>
+      <h2>Inventory</h2>
+      <pre>{JSON.stringify(inventory, null, 2)}</pre>
     </div>
   );
 }
