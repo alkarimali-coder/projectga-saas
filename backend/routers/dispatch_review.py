@@ -5,8 +5,16 @@ from backend.models.service_job import ServiceJob
 from backend.models.job_audit import JobAudit
 from sqlalchemy import select
 import json
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/dispatch/review", tags=["dispatch_review"])
+
+class ApproveRequest(BaseModel):
+    user_id: int
+
+class FollowupRequest(BaseModel):
+    notes: str
+    user_id: int
 
 @router.get("/pending")
 async def get_pending_reviews(db: AsyncSession = Depends(get_db)):
@@ -25,7 +33,7 @@ async def get_pending_reviews(db: AsyncSession = Depends(get_db)):
     ]
 
 @router.post("/approve/{job_id}")
-async def approve_job(job_id: int, data: dict, db: AsyncSession = Depends(get_db)):
+async def approve_job(job_id: int, req: ApproveRequest, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(ServiceJob).where(ServiceJob.id == job_id))
     job = result.scalar_one_or_none()
     if not job:
@@ -38,14 +46,14 @@ async def approve_job(job_id: int, data: dict, db: AsyncSession = Depends(get_db
         job_id=job.id,
         old_status=old_status,
         new_status=job.status,
-        user_id=data.get("user_id", 0)
+        user_id=req.user_id
     )
     db.add(audit)
     await db.commit()
     return {"status": "approved_closed"}
 
 @router.post("/followup/{job_id}")
-async def create_followup(job_id: int, data: dict, db: AsyncSession = Depends(get_db)):
+async def create_followup(job_id: int, req: FollowupRequest, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(ServiceJob).where(ServiceJob.id == job_id))
     job = result.scalar_one_or_none()
     if not job:
@@ -56,19 +64,18 @@ async def create_followup(job_id: int, data: dict, db: AsyncSession = Depends(ge
         machine_id=job.machine_id,
         tenant_id=job.tenant_id,
         status="open",
-        notes=f"Follow-up: {data.get('notes', '')}"
-        # Do NOT set needs_followup on new job
+        notes=f"Follow-up: {req.notes}"
     )
     db.add(new_job)
 
-    # Mark original as needs_followup
+    # Mark original
     old_status = job.status
     job.status = "needs_followup"
     audit = JobAudit(
         job_id=job.id,
         old_status=old_status,
         new_status=job.status,
-        user_id=data.get("user_id", 0)
+        user_id=req.user_id
     )
     db.add(audit)
 
