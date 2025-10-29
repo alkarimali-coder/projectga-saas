@@ -1,40 +1,26 @@
 import { useState } from 'react';
-import { login } from '../services/api';
-import { useAuth } from '../contexts/AuthContext';
+import axios from 'axios';
 
-function Login() {
-  const [email, setEmail] = useState('admin@coam.com');
-  const [password, setPassword] = useState('admin12');
-  const { login: setLogin } = useAuth();
+function Login({ setToken }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await login(email, password);
-      setLogin(res.data.access_token);
-      const payload = JSON.parse(atob(res.data.access_token.split('.')[1]));
-      const role = payload.role;
-      const routes = {
-        super_admin: '/super-admin',
-        ml_admin: '/master-admin',
-        dispatcher: '/dispatcher',
-        warehouse: '/warehouse',
-        tech: '/field-tech',
-        location_owner: '/location-owner',
-      };
-      window.location.href = routes[role] || '/dashboard';
-    } catch (err) {
-      alert('Login failed');
-    }
+  const handleLogin = () => {
+    axios.post('http://127.0.0.1:8000/auth/login', new URLSearchParams({
+      username, password
+    })).then(res => {
+      localStorage.setItem('token', res.data.access_token);
+      setToken(res.data.access_token);
+    });
   };
 
   return (
-    <form onSubmit={handleLogin} style={{ padding: '2rem' }}>
-      <h2>Login</h2>
-      <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required />
-      <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
+    <div style={{ padding: '2rem' }}>
+      <h1>Login</h1>
+      <input placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
+      <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+      <button onClick={handleLogin}>Login</button>
+    </div>
   );
 }
 

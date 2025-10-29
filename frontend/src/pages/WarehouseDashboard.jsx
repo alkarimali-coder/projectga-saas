@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-function WarehouseDashboard() {
+function WarehouseDashboard({ token }) {
   const [jobs, setJobs] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/warehouse/jobs', {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      headers: { Authorization: `Bearer ${token}` }
     }).then(res => setJobs(res.data))
       .catch(err => setError(err.message));
-  }, []);
+  }, [token]);
 
   const fulfillJob = (id) => {
     axios.post(`http://127.0.0.1:8000/warehouse/fulfill/${id}`, {}, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      headers: { Authorization: `Bearer ${token}` }
     }).then(() => setJobs(jobs.filter(j => j.id !== id)));
   };
 
