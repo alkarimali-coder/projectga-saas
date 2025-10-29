@@ -7,6 +7,8 @@ router = APIRouter(prefix="/dispatch", tags=["dispatch"])
 
 @router.post("/job")
 async def create_job(job_data: dict, db: AsyncSession = Depends(get_db)):
+    # Default tenant if not provided
+    job_data.setdefault('tenant_id', 1)
     job = ServiceJob(**job_data)
     db.add(job)
     await db.commit()
