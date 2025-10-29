@@ -5,7 +5,7 @@ import DispatchDashboard from './pages/DispatchDashboard';
 import { useState } from 'react';
 
 function App() {
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [token, setToken] = useState(null);
 
   if (!token) return <Login setToken={setToken} />;
 
