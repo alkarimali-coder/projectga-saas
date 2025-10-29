@@ -8,3 +8,6 @@ app.include_router(auth.router)
 app.include_router(dispatch.router)
 app.include_router(warehouse.router)
 app.include_router(field_tech_router)  # <-- ADD THIS
+
+from backend.routers.dispatch_review import router as dispatch_review_router
+app.include_router(dispatch_review_router)
