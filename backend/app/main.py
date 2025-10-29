@@ -11,3 +11,6 @@ app.include_router(field_tech_router)  # <-- ADD THIS
 
 from backend.routers.dispatch_review import router as dispatch_review_router
 app.include_router(dispatch_review_router)
+
+from backend.routers.warehouse_parts import router as warehouse_parts_router
+app.include_router(warehouse_parts_router)
