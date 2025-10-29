@@ -7,8 +7,13 @@ router = APIRouter(prefix="/dispatch", tags=["dispatch"])
 
 @router.post("/job")
 async def create_job(job_data: dict, db: AsyncSession = Depends(get_db)):
-    # Default tenant if not provided
-    job_data.setdefault('tenant_id', 1)
+    # Convert machine_id to int if possible, else keep as string
+    if "machine_id" in job_data:
+        try:
+            job_data["machine_id"] = int(job_data["machine_id"])
+        except (ValueError, TypeError):
+            pass  # keep as string
+    job_data.setdefault("tenant_id", 1)
     job = ServiceJob(**job_data)
     db.add(job)
     await db.commit()
