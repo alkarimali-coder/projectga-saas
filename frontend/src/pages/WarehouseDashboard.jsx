@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 
 function WarehouseDashboard() {
   const [jobs, setJobs] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/warehouse/jobs', {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).then(res => setJobs(res.data));
+    }).then(res => setJobs(res.data))
+      .catch(err => setError(err.message));
   }, []);
 
   const fulfillJob = (id) => {
@@ -16,6 +17,8 @@ function WarehouseDashboard() {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(() => setJobs(jobs.filter(j => j.id !== id)));
   };
+
+  if (error) return <div style={{ padding: '2rem', color: 'red' }}>Error: {error}</div>;
 
   return (
     <div style={{ padding: '2rem' }}>
@@ -27,7 +30,6 @@ function WarehouseDashboard() {
             <th style={{ padding: '0.5rem', border: '1px solid #ddd' }}>Machine</th>
             <th style={{ padding: '0.5rem', border: '1px solid #ddd' }}>Notes</th>
             <th style={{ padding: '0.5rem', border: '1px solid #ddd' }}>Action</th>
-            <th style={{ padding: '0.5rem', border: '1px solid #ddd' }}>PO</th>
           </tr>
         </thead>
         <tbody>
@@ -38,9 +40,6 @@ function WarehouseDashboard() {
               <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{j.notes}</td>
               <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>
                 <button onClick={() => fulfillJob(j.id)}>Fulfill</button>
-              </td>
-              <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>
-                <Link to={`/vendor-po/${j.id}`}>Download PO</Link>
               </td>
             </tr>
           ))}
