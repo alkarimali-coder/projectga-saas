@@ -25,3 +25,6 @@ app.include_router(vendor_router)
 @app.get("/")
 def root():
     return {"message": "PROJECTGA API v1"}
+
+# Add this line after other router includes
+app.include_router(field_tech_router)
