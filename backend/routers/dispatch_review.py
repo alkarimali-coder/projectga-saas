@@ -4,6 +4,7 @@ from backend.db.session import get_db
 from backend.models.service_job import ServiceJob
 from backend.models.job_audit import JobAudit
 from sqlalchemy import select
+import json
 
 router = APIRouter(prefix="/dispatch/review", tags=["dispatch_review"])
 
@@ -18,7 +19,7 @@ async def get_pending_reviews(db: AsyncSession = Depends(get_db)):
             "id": j.id,
             "machine_id": j.machine_id,
             "notes": j.notes,
-            "photos": j.photos,
+            "photos": json.loads(j.photos) if j.photos else [],
             "needs_followup": j.needs_followup
         } for j in jobs
     ]
@@ -55,12 +56,12 @@ async def create_followup(job_id: int, data: dict, db: AsyncSession = Depends(ge
         machine_id=job.machine_id,
         tenant_id=job.tenant_id,
         status="open",
-        notes=f"Follow-up: {data.get('notes', '')}",
-        needs_followup="no"
+        notes=f"Follow-up: {data.get('notes', '')}"
+        # Do NOT set needs_followup on new job
     )
     db.add(new_job)
 
-    # Close original
+    # Mark original as needs_followup
     old_status = job.status
     job.status = "needs_followup"
     audit = JobAudit(
