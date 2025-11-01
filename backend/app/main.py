@@ -1,16 +1,21 @@
 from fastapi import FastAPI
-from backend.routers import auth, dispatch, warehouse
-from backend.routers.field_tech import router as field_tech_router  # <-- ADD THIS
+from fastapi.middleware.cors import CORSMiddleware
+import os
 
-app = FastAPI()
+app = FastAPI(title="PROJECTGA SaaS API", version="1.0")
 
-app.include_router(auth.router)
-app.include_router(dispatch.router)
-app.include_router(warehouse.router)
-app.include_router(field_tech_router)  # <-- ADD THIS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-from backend.routers.dispatch_review import router as dispatch_review_router
-app.include_router(dispatch_review_router)
+@app.get("/")
+def root():
+    return {"message": "Backend running successfully 🚀", "env": os.getenv("ENV")}
 
-from backend.routers.warehouse_parts import router as warehouse_parts_router
-app.include_router(warehouse_parts_router)
+@app.get("/health")
+def health():
+    return {"status": "ok"}
