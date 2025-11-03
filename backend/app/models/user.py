@@ -1,12 +1,10 @@
-from sqlalchemy import Column, Integer, String, DateTime
+# © 2025 Coam Core LLC – All Rights Reserved
+from sqlalchemy import Column, Integer, String
 from app.core.db import Base
-from datetime import datetime
 
 class User(Base):
     __tablename__ = "users"
+
     id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    password_hash = Column(String)
-    role = Column(String)
-    master_license = Column(String)
-    last_login = Column(DateTime, default=datetime.utcnow)
+    email = Column(String, unique=True, index=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
