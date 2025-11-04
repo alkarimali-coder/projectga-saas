@@ -1,3 +1,4 @@
+from inventory_models import InventoryAlert
 from datetime import datetime, timezone, timedelta
 from typing import List, Dict, Any, Optional
 from motor.motor_asyncio import AsyncIOMotorDatabase

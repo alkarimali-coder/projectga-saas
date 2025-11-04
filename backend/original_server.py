@@ -53,7 +53,8 @@ from financial_service import FinancialService
 # Import notification and automation services
 from notification_models import *
 from notification_service import NotificationService
-from automation_service import AutomationService
+from app.automation_service import AutomationService
+
 
 # Import billing system
 from billing_models import *

@@ -1,0 +1,11 @@
+{
+  "roles": [
+    {"name": "SuperAdmin", "description": "Full system control"},
+    {"name": "MLAdmin", "description": "Master License admin"},
+    {"name": "Dispatch", "description": "Dispatch operations"},
+    {"name": "Tech", "description": "Field technician"},
+    {"name": "Warehouse", "description": "Warehouse ops"},
+    {"name": "Finance", "description": "Financial ops"},
+    {"name": "Viewer", "description": "Read-only"}
+  ]
+}

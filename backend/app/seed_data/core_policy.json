@@ -1,0 +1,9 @@
+{
+  "SuperAdmin": {"allow_all": true},
+  "MLAdmin": {"deny": ["system.audit.export"]},
+  "Dispatch": {"deny": ["revenue.view_all", "system.settings.update"]},
+  "Tech": {"deny": ["revenue.view_all", "finance.export"]},
+  "Warehouse": {"deny": ["revenue.view_all", "system.settings.update"]},
+  "Finance": {"allow": ["revenue.view_all"], "deny": ["system.settings.update"]},
+  "Viewer": {"read_only": true}
+}

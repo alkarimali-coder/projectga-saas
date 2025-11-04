@@ -1,42 +1,55 @@
-import sys
+# backend/alembic/env.py
 import os
+import sys
 from logging.config import fileConfig
+
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-# --------------------------------------------------------------------
-# ✅ Add your backend app path
-# --------------------------------------------------------------------
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.insert(0, BASE_DIR)
+# ---------------------------------------------------------------------------
+# Make sure Alembic can import "app" no matter where it's launched from
+# ---------------------------------------------------------------------------
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if BASE_DIR not in sys.path:
+    sys.path.append(BASE_DIR)
 
-# --------------------------------------------------------------------
-# ✅ Import your app Base and models
-# --------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Import application metadata
+# ---------------------------------------------------------------------------
 from app.core.db import Base
-from app.models import *  # automatically loads all models into metadata
-from app.models import user  # ensure user model is explicitly imported
+from app.models import (
+    location,
+    machine,
+    vendor,
+    part,
+    work_order,
+    core_context,
+)
+# ---------------------------------------------------------------------------
 
-# --------------------------------------------------------------------
-# Alembic Config object, interpret the .ini file
-# --------------------------------------------------------------------
+# Alembic Config object, provides access to the .ini file values
 config = context.config
-if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
 
+# Interpret the config file for Python logging
+fileConfig(config.config_file_name)
+
+# Metadata from our SQLAlchemy models
 target_metadata = Base.metadata
 
-# --------------------------------------------------------------------
-# Migration functions
-# --------------------------------------------------------------------
+
 def run_migrations_offline():
     """Run migrations in 'offline' mode."""
+    url = config.get_main_option("sqlalchemy.url")
+    if not url:
+        # fallback for environment variable if .ini not populated
+        url = os.getenv("DATABASE_URL", "sqlite:///app.db")
     context.configure(
-        url="sqlite:///app.db",
+        url=url,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
     )
+
     with context.begin_transaction():
         context.run_migrations()
 
@@ -56,10 +69,8 @@ def run_migrations_online():
             context.run_migrations()
 
 
-# --------------------------------------------------------------------
-# Choose offline vs online
-# --------------------------------------------------------------------
 if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
+

@@ -1,0 +1,31 @@
+from functools import wraps
+from fastapi import Depends, HTTPException, status, Request
+from typing import List
+from app.core.security import get_current_user  # assumes you already have this
+from app.services.settings_cache import settings_cache
+from app.services.audit import log_forbidden
+
+def require_roles(*allowed_roles: List[str]):
+    """
+    Decorator for route functions:
+      @require_roles("SuperAdmin", "MLAdmin")
+      async def handler(...):
+          ...
+    """
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(*args, request: Request = None, user=Depends(get_current_user), **kwargs):
+            # System-wide “lock switch” examples (respect live settings)
+            if settings_cache.get("enable_rate_limiting") is None:
+                settings_cache.load()  # lazy init on first call
+
+            user_role = getattr(user, "role", None)
+            if user_role in allowed_roles:
+                return await func(*args, request=request, user=user, **kwargs)
+
+            # log and raise 403
+            if request is not None:
+                await log_forbidden(request, user, reason="Role not allowed", required=list(allowed_roles))
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+        return wrapper
+    return decorator

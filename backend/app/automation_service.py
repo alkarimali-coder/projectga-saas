@@ -3,8 +3,16 @@ from datetime import datetime, timedelta, timezone
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from notification_models import *
 from notification_service import NotificationService
+from app.schemas import RenewalItem, JobRepostRecord, CreateRenewalItemRequest
+from app.schemas import (
+    RenewalItem,
+    JobRepostRecord,
+    CreateRenewalItemRequest,
+    AutomationStatsResponse
+)
 import logging
 import asyncio
+
 
 logger = logging.getLogger(__name__)
 
