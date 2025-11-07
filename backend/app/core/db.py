@@ -1,34 +1,26 @@
-"""
-Central database configuration and Base definition.
-This module defines the SQLAlchemy engine, session, and Base
-with connection pooling for better concurrency.
-"""
-
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from sqlalchemy.pool import QueuePool
+from app.core.config import settings
 
-# --- Database URL ---
-# keep sqlite for local dev; replace with postgres URL in production
-DATABASE_URL = "sqlite:///app.db"
+# Database URL from .env
+DATABASE_URL = getattr(settings, "DATABASE_URL", None)
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL is not set in environment variables")
 
-# --- Engine with connection pooling ---
+# Connection pooling (Phase 4 settings)
 engine = create_engine(
     DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=QueuePool,
-    pool_size=5,
-    max_overflow=10,
-    pool_timeout=30,
-    pool_recycle=1800,
-    echo=False,
+    pool_size=int(getattr(settings, "POOL_SIZE", 10)),
+    max_overflow=int(getattr(settings, "POOL_OVERFLOW", 20)),
+    pool_timeout=int(getattr(settings, "POOL_TIMEOUT", 30)),
+    pool_recycle=int(getattr(settings, "POOL_RECYCLE", 1800)),
+    pool_pre_ping=True,
 )
 
-# --- Session factory ---
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# --- Dependency for FastAPI routes ---
+# ✅ Dependency for FastAPI routes
 def get_db():
     db = SessionLocal()
     try:
@@ -36,11 +28,6 @@ def get_db():
     finally:
         db.close()
 
-# --- Optional simple ping test ---
-def ping_db():
-    try:
-        with engine.connect() as conn:
-            conn.execute(text("SELECT 1"))
-        return True
-    except Exception:
-        return False
+# Optional utility for graceful shutdown
+def dispose_engine():
+    engine.dispose()

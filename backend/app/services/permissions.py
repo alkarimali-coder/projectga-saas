@@ -1,7 +1,7 @@
 from functools import wraps
 from fastapi import Depends, HTTPException, status, Request
 from typing import List, Callable, Any
-from app.core.security import get_current_user  # ✅ fixed import
+from app.core.jwt import get_current_user  # ✅ fixed import
 from app.services.settings_cache import settings_cache
 from app.services.audit import log_forbidden
 

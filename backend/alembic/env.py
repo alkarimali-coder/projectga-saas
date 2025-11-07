@@ -1,48 +1,44 @@
-# backend/alembic/env.py
 import os
 import sys
 from logging.config import fileConfig
-
+from dotenv import load_dotenv
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-# ---------------------------------------------------------------------------
-# Make sure Alembic can import "app" no matter where it's launched from
-# ---------------------------------------------------------------------------
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+# -------------------------------------------------------------------
+# Load .env so Alembic can see DATABASE_URL
+# -------------------------------------------------------------------
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
 
-# ---------------------------------------------------------------------------
-# Import application metadata
-# ---------------------------------------------------------------------------
-from app.core.db import Base
-from app.models import (
-    location,
-    machine,
-    vendor,
-    part,
-    work_order,
-    core_context,
-)
-# ---------------------------------------------------------------------------
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
-# Alembic Config object, provides access to the .ini file values
+# -------------------------------------------------------------------
+# Alembic Config object
+# -------------------------------------------------------------------
 config = context.config
 
-# Interpret the config file for Python logging
-fileConfig(config.config_file_name)
+# Use DATABASE_URL from environment or default to local SQLite
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///../app.db")
+config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
-# Metadata from our SQLAlchemy models
+# Configure logging
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
+
+# -------------------------------------------------------------------
+# Import your models’ metadata
+# -------------------------------------------------------------------
+from app.core.db import Base  # Base = declarative_base()
 target_metadata = Base.metadata
 
-
+# -------------------------------------------------------------------
+# Run migrations
+# -------------------------------------------------------------------
 def run_migrations_offline():
     """Run migrations in 'offline' mode."""
     url = config.get_main_option("sqlalchemy.url")
-    if not url:
-        # fallback for environment variable if .ini not populated
-        url = os.getenv("DATABASE_URL", "sqlite:///app.db")
     context.configure(
         url=url,
         target_metadata=target_metadata,

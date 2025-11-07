@@ -1,16 +1,17 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
-from datetime import datetime
-from app.core.db import Base
+from sqlalchemy.sql import func
+from app.core.db import Base  # <-- this must exist
 
 class SystemSettings(Base):
     __tablename__ = "system_settings"
-    id = Column(Integer, primary_key=True)
-    api_version = Column(String(10), default="v1")
-    rate_limit_login = Column(String(30), default="5/minute")
-    rate_limit_general = Column(String(30), default="100/minute")
-    rate_limit_core = Column(String(30), default="30/minute")
-    enable_rate_limiting = Column(Boolean, default=True)
-    redis_url = Column(String(255), nullable=True)
 
-    updated_by = Column(String(120), default="System")
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    id = Column(Integer, primary_key=True, index=True)
+    api_version = Column(String, default="v1")
+    rate_limit_login = Column(Integer, default=10)
+    rate_limit_general = Column(Integer, default=100)
+    rate_limit_core = Column(Integer, default=1000)
+    enable_rate_limiting = Column(Boolean, default=False)
+    redis_url = Column(String, nullable=True)
+    updated_by = Column(String, nullable=True)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
